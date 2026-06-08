@@ -17,3 +17,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# macOS
+._*
+
+# AI agent local config and memory
+.claude/*
+!.claude/settings.json
