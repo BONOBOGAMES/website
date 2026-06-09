@@ -20,6 +20,13 @@ const games = [
     description:
       'A quiet little puzzle about letting things go, one at a time. Pull each arrow and it slides away — but only if the path ahead is clear. Strategy, but the soft kind.',
   },
+  {
+    title: 'Chirpy',
+    href: '/games/chirpy',
+    status: 'coming soon',
+    description:
+      'A simple bird, a simple world, an infinite journey. Help Chirpy flap, glide, and walk through a world that never stops — keeping his joy and freedom alive.',
+  },
 ]
 
 export default function GamesPage() {
