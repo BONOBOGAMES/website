@@ -13,6 +13,13 @@ const games = [
     description:
       'A calm puzzle game about placing pieces, not racing the clock. No falling blocks. No countdown. Just you and the board.',
   },
+  {
+    title: 'Arrows',
+    href: '/games/arrows',
+    status: 'coming soon',
+    description:
+      'A quiet little puzzle about letting things go, one at a time. Pull each arrow and it slides away — but only if the path ahead is clear. Strategy, but the soft kind.',
+  },
 ]
 
 export default function GamesPage() {
