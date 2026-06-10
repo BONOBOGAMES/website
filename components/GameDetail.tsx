@@ -2,7 +2,7 @@
 
 import { motion, useAnimationControls } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { getAdjacentGames, type Game } from '@/lib/games'
 import GamePager from './GamePager'
 
@@ -27,17 +27,25 @@ export default function GameDetail({ slug, title, status, tagline, intro, featur
 
   // Entrance: if we arrived via the pager, slide in from the side the new
   // content should come from; otherwise just settle in with a soft fade.
+  // Runs exactly once per mount — the direction is consumed from
+  // sessionStorage, so React StrictMode's double effect invocation (dev)
+  // must not run it twice, or the second pass would miss the (now removed)
+  // direction and strand the slide-in half-way.
+  const entered = useRef(false)
   useEffect(() => {
+    if (entered.current) return
+    entered.current = true
     const dir = sessionStorage.getItem(DIR_KEY)
     sessionStorage.removeItem(DIR_KEY)
     if (dir === 'next' || dir === 'prev') {
-      controls.set({ x: dir === 'next' ? OFF : `-${OFF}`, opacity: 0 })
-      controls.start({ x: 0, opacity: 1 }, { duration: 0.4, ease: [0.22, 1, 0.36, 1] })
+      // Explicit [from, to] keyframes — animating in a single start avoids the
+      // set()/start() race that otherwise strands the content at the offset.
+      const from = dir === 'next' ? OFF : `-${OFF}`
+      controls.start({ x: [from, '0%'], opacity: [0, 1] }, { duration: 0.45, ease: [0.22, 1, 0.36, 1] })
     } else {
-      controls.set({ opacity: 0, y: 8 })
-      controls.start({ opacity: 1, y: 0 }, { duration: 0.3, ease: 'easeOut' })
+      controls.start({ opacity: [0, 1], y: [8, 0] }, { duration: 0.3, ease: 'easeOut' })
     }
-  }, [slug, controls])
+  }, [controls])
 
   // Shoot the current content off-screen (opposite the arrow, to clear room),
   // remember the direction, then navigate.
