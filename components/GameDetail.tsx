@@ -2,27 +2,19 @@
 
 import { motion, useAnimationControls } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, type ReactNode } from 'react'
-import { getAdjacentGames, type Game } from '@/lib/games'
+import { useEffect, useRef } from 'react'
+import { getAdjacentGames, getGame, gameHref, type Game } from '@/lib/games'
 import GamePager from './GamePager'
-
-type GameDetailProps = {
-  slug: string
-  title: string
-  status: string
-  tagline: string
-  intro: ReactNode
-  features: string[]
-}
 
 // How far content travels when it leaves / arrives (past the viewport edge).
 const OFF = '110%'
 // Tells the next page which way it was paged so it can slide in to match.
 const DIR_KEY = 'gamePagerDir'
 
-export default function GameDetail({ slug, title, status, tagline, intro, features }: GameDetailProps) {
+export default function GameDetail({ slug }: { slug: string }) {
   const router = useRouter()
   const controls = useAnimationControls()
+  const game = getGame(slug)
   const { prev, next } = getAdjacentGames(slug)
 
   // Entrance: if we arrived via the pager, slide in from the side the new
@@ -56,7 +48,7 @@ export default function GameDetail({ slug, title, status, tagline, intro, featur
         { x: dir === 1 ? `-${OFF}` : OFF, opacity: 0 },
         { duration: 0.32, ease: [0.5, 0, 0.75, 0] },
       )
-      .then(() => router.push(target.href))
+      .then(() => router.push(gameHref(target.slug)))
   }
 
   return (
@@ -67,18 +59,18 @@ export default function GameDetail({ slug, title, status, tagline, intro, featur
         className="max-w-2xl mx-auto px-6 pt-32 pb-24"
       >
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold">{title}</h1>
+          <h1 className="text-3xl font-bold">{game.title}</h1>
           <span className="text-xs bg-lime-600/10 dark:bg-lime-400/10 text-lime-600 dark:text-lime-400 border border-lime-600/20 dark:border-lime-400/20 px-2 py-0.5 rounded-full">
-            {status}
+            {game.status}
           </span>
         </div>
-        <p className="text-gray-500 mb-14">{tagline}</p>
+        <p className="text-gray-500 mb-14">{game.tagline}</p>
 
-        <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-14">{intro}</p>
+        <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-14">{game.intro}</p>
 
         <h2 className="text-xs uppercase tracking-widest text-gray-500 mb-5">What to expect</h2>
         <ul className="space-y-3 mb-16">
-          {features.map((f) => (
+          {game.features.map((f) => (
             <li key={f} className="flex gap-3 text-gray-700 dark:text-gray-300">
               <span className="text-lime-600 dark:text-lime-400 select-none">—</span>
               {f}

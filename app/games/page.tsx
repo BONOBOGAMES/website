@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { games } from '@/lib/games'
+import { games, gameHref } from '@/lib/games'
 
 export const metadata: Metadata = {
   title: 'Games — BONOBO GAMES',
@@ -13,10 +13,10 @@ export default function GamesPage() {
       <p className="text-gray-500 mb-16">Small games. Made with care. No rush.</p>
 
       <div className="space-y-4">
-        {games.map(({ title, href, status, description }) => (
+        {games.map(({ slug, title, status, description }) => (
           <Link
-            key={href}
-            href={href}
+            key={slug}
+            href={gameHref(slug)}
             className="block border border-gray-200 dark:border-white/10 rounded-xl p-6 hover:border-gray-300 dark:hover:border-white/25 transition-colors group"
           >
             <div className="flex items-center gap-3 mb-3">
