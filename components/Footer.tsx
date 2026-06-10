@@ -2,6 +2,7 @@ const socials = [
   { label: 'X', href: 'https://x.com/bonobogames_hun' },
   { label: 'Reddit', href: 'https://www.reddit.com/user/GSM_BONOBO/' },
   { label: 'GitHub', href: 'https://github.com/BONOBOGAMES' },
+  { label: 'GitLab', href: 'https://gitlab.com/BONOBOGAMES' },
   { label: 'Email', href: 'mailto:gsm@bonobo.games' },
 ]
 
