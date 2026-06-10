@@ -3,6 +3,7 @@
 import { motion, useAnimationControls } from 'framer-motion'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import Spinner from './Spinner'
 
 const COVER_MS = 200
 const REVEAL_MS = 200
@@ -54,17 +55,10 @@ export default function TransitionOverlay() {
       style={{ pointerEvents: active ? 'auto' : 'none' }}
       className="fixed inset-0 z-30 flex items-center justify-center bg-white dark:bg-black"
     >
-      {/* Brand mark shown on the cover so the page-load moment is never blank.
-          As a child of the fading overlay it inherits the cover's opacity. */}
-      {active && (
-        <img
-          src="/logo-lime.png"
-          alt=""
-          width={120}
-          height={60}
-          className="h-auto w-28 animate-pulse"
-        />
-      )}
+      {/* Brand-shaped loader shown on the cover so the page-load moment is
+          never blank. As a child of the fading overlay it inherits the
+          cover's opacity. */}
+      {active && <Spinner />}
     </motion.div>
   )
 }
