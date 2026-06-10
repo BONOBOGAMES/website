@@ -1,27 +1,10 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 
+// Page fades are handled by TransitionOverlay (cover → swap → reveal).
+// Content always renders at full opacity so it never pops in or
+// double-fades during navigation.
 export default function PageTransition({ children }: { children: ReactNode }) {
-  const pathname = usePathname()
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{
-          duration: 0.15,
-          delay: 0.15, // Wait for overlay to fade in before showing content
-          ease: 'easeInOut',
-        }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  )
+  return <>{children}</>
 }
