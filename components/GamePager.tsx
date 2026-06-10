@@ -1,6 +1,7 @@
 'use client'
 
-import { motion, useAnimationControls } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
+import { useState } from 'react'
 import type { Game } from '@/lib/games'
 
 type GamePagerProps = {
@@ -28,15 +29,29 @@ function PagerArrow({
   game: Game
   onActivate: () => void
 }) {
-  const controls = useAnimationControls()
   const isLeft = side === 'left'
+  const [leaving, setLeaving] = useState(false)
+
+  // Declarative entrance/exit. initial = off-screen, animate = 'rest' plays the
+  // pull-in on mount; clicking flips to the exit variant. Variants animate x
+  // reliably (unlike an imperative start whose "from" can be missed).
+  const variants: Variants = {
+    off: { x: isLeft ? '-135%' : '135%', opacity: 0 },
+    rest: {
+      x: '0%',
+      opacity: 1,
+      // easeOutBack overshoots the edge then settles — a gravity-yanked feel.
+      transition: { duration: 0.6, ease: [0.34, 1.56, 0.64, 1], delay: isLeft ? 0.1 : 0.16 },
+    },
+    exit: {
+      x: isLeft ? '-150%' : '150%',
+      opacity: 0,
+      transition: { duration: 0.32, ease: [0.5, 0, 0.75, 0] },
+    },
+  }
 
   const handle = () => {
-    // The arrow shoots off its own edge as the page change begins.
-    controls.start(
-      { x: isLeft ? '-150%' : '150%', opacity: 0 },
-      { duration: 0.32, ease: [0.5, 0, 0.75, 0] },
-    )
+    setLeaving(true)
     onActivate()
   }
 
@@ -47,7 +62,9 @@ function PagerArrow({
       <motion.button
         type="button"
         onClick={handle}
-        animate={controls}
+        variants={variants}
+        initial="off"
+        animate={leaving ? 'exit' : 'rest'}
         aria-label={`${isLeft ? 'Previous' : 'Next'} game: ${game.title}`}
         className={`group flex items-center gap-2 py-5 text-gray-400 transition-colors hover:text-lime-600 dark:hover:text-lime-400 ${
           isLeft ? 'flex-row pl-2 pr-4' : 'flex-row-reverse pl-4 pr-2'
