@@ -1,8 +1,8 @@
 'use client'
 
-import { motion, useAnimationControls } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { useRef, useState } from 'react'
 import { getAdjacentGames, getGame, gameHref, type Game } from '@/lib/games'
 import GamePager from './GamePager'
 
@@ -11,51 +11,62 @@ const OFF = '110%'
 // Tells the next page which way it was paged so it can slide in to match.
 const DIR_KEY = 'gamePagerDir'
 
+// Declarative variants animate reliably (an imperative start can silently miss
+// its target and leave the content invisible). initial -> 'visible' plays the
+// entrance on mount; a pager click flips to an exit variant.
+const variants: Variants = {
+  enterNext: { opacity: 0, x: OFF },
+  enterPrev: { opacity: 0, x: `-${OFF}` },
+  enterNeutral: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    x: '0%',
+    y: 0,
+    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+  },
+  exitNext: { opacity: 0, x: `-${OFF}`, transition: { duration: 0.32, ease: [0.5, 0, 0.75, 0] } },
+  exitPrev: { opacity: 0, x: OFF, transition: { duration: 0.32, ease: [0.5, 0, 0.75, 0] } },
+}
+
 export default function GameDetail({ slug }: { slug: string }) {
   const router = useRouter()
-  const controls = useAnimationControls()
   const game = getGame(slug)
   const { prev, next } = getAdjacentGames(slug)
 
-  // Entrance: if we arrived via the pager, slide in from the side the new
-  // content should come from; otherwise just settle in with a soft fade.
-  // Runs exactly once per mount — the direction is consumed from
-  // sessionStorage, so React StrictMode's double effect invocation (dev)
-  // must not run it twice, or the second pass would miss the (now removed)
-  // direction and strand the slide-in half-way.
-  const entered = useRef(false)
-  useEffect(() => {
-    if (entered.current) return
-    entered.current = true
-    const dir = sessionStorage.getItem(DIR_KEY)
+  // Direction we arrived from (consumed once, client-only) — drives the
+  // initial variant so the content slides in from the matching side.
+  const [enterDir] = useState<'next' | 'prev' | null>(() => {
+    if (typeof window === 'undefined') return null
+    const d = sessionStorage.getItem(DIR_KEY)
     sessionStorage.removeItem(DIR_KEY)
-    if (dir === 'next' || dir === 'prev') {
-      // Explicit [from, to] keyframes — animating in a single start avoids the
-      // set()/start() race that otherwise strands the content at the offset.
-      const from = dir === 'next' ? OFF : `-${OFF}`
-      controls.start({ x: [from, '0%'], opacity: [0, 1] }, { duration: 0.45, ease: [0.22, 1, 0.36, 1] })
-    } else {
-      controls.start({ opacity: [0, 1], y: [8, 0] }, { duration: 0.3, ease: 'easeOut' })
-    }
-  }, [controls])
+    return d === 'next' || d === 'prev' ? d : null
+  })
+  const [leaving, setLeaving] = useState<'next' | 'prev' | null>(null)
+  const pendingHref = useRef<string | null>(null)
+
+  const initial =
+    enterDir === 'next' ? 'enterNext' : enterDir === 'prev' ? 'enterPrev' : 'enterNeutral'
+  const animate = leaving === 'next' ? 'exitNext' : leaving === 'prev' ? 'exitPrev' : 'visible'
 
   // Shoot the current content off-screen (opposite the arrow, to clear room),
-  // remember the direction, then navigate.
+  // remember the direction, then navigate once the exit animation finishes.
   const leave = (dir: 1 | -1, target: Game) => {
+    pendingHref.current = gameHref(target.slug)
     sessionStorage.setItem(DIR_KEY, dir === 1 ? 'next' : 'prev')
-    controls
-      .start(
-        { x: dir === 1 ? `-${OFF}` : OFF, opacity: 0 },
-        { duration: 0.32, ease: [0.5, 0, 0.75, 0] },
-      )
-      .then(() => router.push(gameHref(target.slug)))
+    setLeaving(dir === 1 ? 'next' : 'prev')
   }
 
   return (
     <>
       <motion.div
-        animate={controls}
-        initial={{ opacity: 0 }}
+        variants={variants}
+        initial={initial}
+        animate={animate}
+        onAnimationComplete={(def) => {
+          if ((def === 'exitNext' || def === 'exitPrev') && pendingHref.current) {
+            router.push(pendingHref.current)
+          }
+        }}
         className="max-w-2xl mx-auto px-6 pt-32 pb-24"
       >
         <div className="flex items-center gap-3 mb-2">
