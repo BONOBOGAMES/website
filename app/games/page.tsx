@@ -1,33 +1,10 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { games } from '@/lib/games'
 
 export const metadata: Metadata = {
   title: 'Games — BONOBO GAMES',
 }
-
-const games = [
-  {
-    title: 'Pieceful',
-    href: '/games/pieceful',
-    status: 'in progress',
-    description:
-      'A calm puzzle game about placing pieces, not racing the clock. No falling blocks. No countdown. Just you and the board.',
-  },
-  {
-    title: 'Arrows',
-    href: '/games/arrows',
-    status: 'coming soon',
-    description:
-      'A quiet little puzzle about letting things go, one at a time. Pull each arrow and it slides away — but only if the path ahead is clear. Strategy, but the soft kind.',
-  },
-  {
-    title: 'Chirpy',
-    href: '/games/chirpy',
-    status: 'coming soon',
-    description:
-      'A simple bird, a simple world, an infinite journey. Help Chirpy flap, glide, and walk through a world that never stops — keeping his joy and freedom alive.',
-  },
-]
 
 export default function GamesPage() {
   return (

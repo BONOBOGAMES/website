@@ -19,6 +19,7 @@ const features = [
 export default function ChirpyPage() {
   return (
     <GameDetail
+      slug="chirpy"
       title="Chirpy"
       status="coming soon"
       tagline="A simple bird, a simple world, an infinite journey"

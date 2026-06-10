@@ -19,6 +19,7 @@ const features = [
 export default function ArrowsPage() {
   return (
     <GameDetail
+      slug="arrows"
       title="Arrows"
       status="coming soon"
       tagline="A quiet little puzzle about letting things go, one at a time"

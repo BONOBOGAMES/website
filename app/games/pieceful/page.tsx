@@ -16,6 +16,7 @@ const features = [
 export default function PiecefulPage() {
   return (
     <GameDetail
+      slug="pieceful"
       title="Pieceful"
       status="in progress"
       tagline="A puzzle game without the panic"
