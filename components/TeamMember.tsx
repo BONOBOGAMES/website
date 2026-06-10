@@ -10,9 +10,10 @@ interface TeamMemberProps {
   role: string
   avatar: string
   avatarHighRes?: string
+  email?: string
 }
 
-export default function TeamMember({ name, nickname, role, avatar, avatarHighRes }: TeamMemberProps) {
+export default function TeamMember({ name, nickname, role, avatar, avatarHighRes, email }: TeamMemberProps) {
   const [isZoomed, setIsZoomed] = useState(false)
 
   const displayName = nickname ? (
@@ -39,6 +40,14 @@ export default function TeamMember({ name, nickname, role, avatar, avatarHighRes
         <div>
           <p className="font-semibold text-lg">{displayName}</p>
           <p className="text-gray-500 text-sm mt-1">{role}</p>
+          {email && (
+            <a
+              href={`mailto:${email}`}
+              className="text-lime-600 dark:text-lime-400 text-sm mt-1 inline-block hover:underline"
+            >
+              {email}
+            </a>
+          )}
         </div>
       </div>
 

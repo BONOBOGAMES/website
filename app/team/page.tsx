@@ -1,19 +1,10 @@
 import type { Metadata } from 'next'
 import TeamMember from '@/components/TeamMember'
+import { members, studioEmail } from '@/lib/team'
 
 export const metadata: Metadata = {
   title: 'Team — BONOBO GAMES',
 }
-
-const members = [
-  {
-    name: 'Gábor Simon',
-    nickname: 'Sala',
-    role: 'Founder, developer',
-    avatar: '/gabor-avatar.png',
-    avatarHighRes: '/sala.png'
-  },
-]
 
 export default function TeamPage() {
   return (
@@ -23,11 +14,20 @@ export default function TeamPage() {
 
       <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-16">
         The cohort is open and flat. No roles, no hierarchy — just people who want to make
-        something together. Interested? Drop a line at{' '}
-        <a href="mailto:gsm@bonobo.games" className="text-lime-600 dark:text-lime-400 hover:underline">
-          gsm@bonobo.games
-        </a>
-        .
+        something together.
+        {/* Studio contact — only rendered once studioEmail is set (see lib/team). */}
+        {studioEmail && (
+          <>
+            {' '}Interested? Drop a line at{' '}
+            <a
+              href={`mailto:${studioEmail}`}
+              className="text-lime-600 dark:text-lime-400 hover:underline"
+            >
+              {studioEmail}
+            </a>
+            .
+          </>
+        )}
       </p>
 
       <div className="border-t border-gray-200 dark:border-white/10 pt-8 space-y-8">
