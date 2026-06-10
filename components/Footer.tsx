@@ -1,9 +1,12 @@
+import { studioEmail } from '@/lib/team'
+
 const socials = [
   { label: 'X', href: 'https://x.com/bonobogames_hun' },
   { label: 'Reddit', href: 'https://www.reddit.com/user/GSM_BONOBO/' },
   { label: 'GitHub', href: 'https://github.com/BONOBOGAMES' },
   { label: 'GitLab', href: 'https://gitlab.com/BONOBOGAMES' },
-  { label: 'Email', href: 'mailto:gsm@bonobo.games' },
+  // Email only appears once the studio inbox is live (see lib/team).
+  ...(studioEmail ? [{ label: 'Email', href: `mailto:${studioEmail}` }] : []),
 ]
 
 export default function Footer() {
