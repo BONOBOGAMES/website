@@ -52,7 +52,7 @@ export default function TransitionOverlay() {
       initial={{ opacity: 0 }}
       animate={controls}
       style={{ pointerEvents: active ? 'auto' : 'none' }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-black"
+      className="fixed inset-0 z-30 flex items-center justify-center bg-white dark:bg-black"
     >
       {/* Brand mark shown on the cover so the page-load moment is never blank.
           As a child of the fading overlay it inherits the cover's opacity. */}
