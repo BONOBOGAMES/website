@@ -8,6 +8,6 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash /Volumes/Private/BONOBO/.claude/skills/setup-statusline/statusline-command.sh"
+    "command": "bash [ROOT]/BONOBO/.claude/skills/setup-statusline/statusline-command.sh"
   }
 }
