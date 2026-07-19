@@ -6,6 +6,7 @@ import ThemeToggle from './ThemeToggle'
 
 const links = [
   { label: 'Games', href: '/games' },
+  { label: 'Open Source', href: '/open-source' },
   { label: 'Team', href: '/team' },
 ]
 
